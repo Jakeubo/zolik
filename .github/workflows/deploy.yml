@@ -13,11 +13,9 @@ jobs:
       - name: 📦 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🧱 Build Laravel (Composer + NPM)
+      - name: 🧱 Build Laravel (Composer only)
         run: |
           composer install --no-dev --optimize-autoloader
-          npm ci
-          npm run build || true
 
       - name: 🚀 Upload via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -25,10 +23,10 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          protocol: ftp
+          protocol: ftps
           port: 21
           local-dir: ./
-          server-dir: /domains/zapichnito3d.cz/zolik/
+          server-dir: /www/domains/zolik.cz/public_html/
           exclude: |
             **/.git*
             **/node_modules/**
