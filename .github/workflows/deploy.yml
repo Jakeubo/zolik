@@ -1,4 +1,4 @@
-name: 🚀 Deploy to FTP
+name: 🚀 Deploy to FTP (Laravel + Vite)
 
 on:
   push:
@@ -10,13 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Stáhne repozitář
       - name: 📦 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🧱 Build Laravel (Composer only)
+      # 2️⃣ PHP prostředí (pro composer)
+      - name: 🧰 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, bcmath, pdo, mysql
+          coverage: none
+
+      # 3️⃣ Node.js prostředí (pro Vite/Tailwind build)
+      - name: 🧰 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 4️⃣ Nainstaluj PHP a JS závislosti + build
+      - name: 🧱 Build Laravel (Composer + NPM)
         run: |
           composer install --no-dev --optimize-autoloader
+          npm ci
+          npm run build
 
+      # 5️⃣ Nahraj na FTP
       - name: 🚀 Upload via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -30,7 +49,6 @@ jobs:
           exclude: |
             **/.git*
             **/node_modules/**
-            **/vendor/**
             **/storage/**
             .env
             .github/
