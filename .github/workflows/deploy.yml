@@ -1,0 +1,39 @@
+name: 🚀 Deploy to FTP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🧱 Build Laravel (Composer + NPM)
+        run: |
+          composer install --no-dev --optimize-autoloader
+          npm ci
+          npm run build || true
+
+      - name: 🚀 Upload via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          protocol: ftp
+          port: 21
+          local-dir: ./
+          server-dir: /domains/zapichnito3d.cz/zolik/
+          exclude: |
+            **/.git*
+            **/node_modules/**
+            **/vendor/**
+            **/storage/**
+            .env
+            .github/
+            README.md
