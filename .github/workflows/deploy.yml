@@ -23,10 +23,10 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          protocol: ftps
+          protocol: ftp
           port: 21
           local-dir: ./
-          server-dir: /www/domains/zolik.cz/public_html/
+          server-dir: /www/domains/zapichnito3d.cz/zolik/
           exclude: |
             **/.git*
             **/node_modules/**
